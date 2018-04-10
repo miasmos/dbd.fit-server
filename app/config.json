@@ -1,0 +1,22 @@
+{
+    "development": {
+        "certificate": {
+            "key": "../app/cert/privkey.pem",
+            "cert": "../app/cert/fullchain.pem"
+        },
+        "host": "localhost",
+        "protocol": "https",
+        "https": 3000,
+        "http": 3001
+    },
+    "production": {
+        "certificate": {
+            "key": "/etc/letsencrypt/live/dbd.gg/privkey.pem",
+            "cert": "/etc/letsencrypt/live/dbd.gg/fullchain.pem"
+        },
+        "host": "dbd.gg",
+        "protocol": "https",
+        "https": 3000,
+        "http": 3001
+    }
+}
