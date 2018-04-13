@@ -18,39 +18,54 @@ export class Models {
                     field: 'name',
                     allowNull: false
                 },
-                hash: {
+                buildURI: {
                     type: DataTypes.STRING,
-                    field: 'hash',
+                    field: 'build_uri',
                     allowNull: false
                 },
                 buildHash: {
                     type: DataTypes.STRING,
-                    field: 'build',
+                    field: 'build_hash',
                     allowNull: false
-                },
-                offering: {
-                    type: DataTypes.STRING,
-                    field: 'offering',
-                    allowNull: true
                 },
                 perkOneTier: {
                     type: DataTypes.INTEGER,
-                    field: 'perkOneTier',
+                    field: 'perk_one_tier',
                     allowNull: true
                 },
                 perkTwoTier: {
                     type: DataTypes.INTEGER,
-                    field: 'perkTwoTier',
+                    field: 'perk_two_tier',
                     allowNull: true
                 },
                 perkThreeTier: {
                     type: DataTypes.INTEGER,
-                    field: 'perkThreeTier',
+                    field: 'perk_three_tier',
                     allowNull: true
                 },
                 perkFourTier: {
                     type: DataTypes.INTEGER,
-                    field: 'perkFourTier',
+                    field: 'perk_four_tier',
+                    allowNull: true
+                },
+                perkOne: {
+                    type: DataTypes.STRING,
+                    field: 'perk_one',
+                    allowNull: true
+                },
+                perkTwo: {
+                    type: DataTypes.STRING,
+                    field: 'perk_two',
+                    allowNull: true
+                },
+                perkThree: {
+                    type: DataTypes.STRING,
+                    field: 'perk_three',
+                    allowNull: true
+                },
+                perkFour: {
+                    type: DataTypes.STRING,
+                    field: 'perk_four',
                     allowNull: true
                 }
             },
@@ -58,7 +73,7 @@ export class Models {
                 indexes: [
                     {
                         unique: true,
-                        fields: ['hash']
+                        fields: ['build_uri']
                     }
                 ],
                 freezeTableName: true
@@ -88,37 +103,42 @@ export class Models {
                 power: {
                     type: DataTypes.STRING,
                     field: 'power',
-                    allowNull: false
+                    allowNull: true
                 },
                 addonOne: {
                     type: DataTypes.STRING,
-                    field: 'addonOne',
-                    allowNull: false
+                    field: 'addon_one',
+                    allowNull: true
                 },
                 addonTwo: {
                     type: DataTypes.STRING,
-                    field: 'addonTwo',
-                    allowNull: false
+                    field: 'addon_two',
+                    allowNull: true
                 },
                 perkOne: {
                     type: DataTypes.STRING,
-                    field: 'perkOne',
-                    allowNull: false
+                    field: 'perk_one',
+                    allowNull: true
                 },
                 perkTwo: {
                     type: DataTypes.STRING,
-                    field: 'perkTwo',
-                    allowNull: false
+                    field: 'perk_two',
+                    allowNull: true
                 },
                 perkThree: {
                     type: DataTypes.STRING,
-                    field: 'perkThree',
-                    allowNull: false
+                    field: 'perk_three',
+                    allowNull: true
                 },
                 perkFour: {
                     type: DataTypes.STRING,
-                    field: 'perkFour',
-                    allowNull: false
+                    field: 'perk_four',
+                    allowNull: true
+                },
+                offering: {
+                    type: DataTypes.STRING,
+                    field: 'offering',
+                    allowNull: true
                 },
                 hash: {
                     type: DataTypes.STRING,

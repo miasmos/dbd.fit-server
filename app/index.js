@@ -1,7 +1,10 @@
 'use strict';
+import pg from 'pg';
 import { Env } from './services/Env';
-import { Enum } from './Enum';
+import { ErrorCode, ErrorMessage } from './Enum';
 import { Database } from './database/db';
+import { Normalize } from './database/Normalize';
+import { Denormalize } from './database/Denormalize';
 import { Response } from './response/Response';
 import { ErrorExtended as Error } from './response/Error';
 import { Server } from './server';
@@ -19,18 +22,86 @@ class App {
                 : credentials.production.database
         );
 
-        server.post('/save', (request, response) => {
-            Response.ok(response);
+        server.post('/build/save', (request, response) => {
+            const hash = Normalize.build(request.body);
+            const uri = Normalize.buildURI(request.body);
+
+            Promise.all([
+                this.db.builds.create(request.body, hash),
+                this.db.namedBuilds.create(request.body, hash, uri)
+            ])
+                .then(result => {
+                    Response.ok(response, { uri });
+                })
+                .catch(error => {
+                    console.log(error);
+                    Response.error(response);
+                });
+        });
+
+        server.post('/build/get', (request, response) => {
+            this.db.namedBuilds
+                .get(request.body)
+                .then(result => {
+                    if (!!result) {
+                        this.db.builds
+                            .get({ hash: result.buildHash })
+                            .then(result1 => {
+                                if (!!result1) {
+                                    Response.ok(
+                                        response,
+                                        Denormalize.build(
+                                            Object.assign(result1, result)
+                                        )
+                                    );
+                                } else {
+                                    Response.error(
+                                        response,
+                                        new Error(
+                                            ErrorMessage.NOT_FOUND,
+                                            ErrorCode.NOT_FOUND
+                                        )
+                                    );
+                                }
+                            })
+                            .catch(error => {
+                                Response.error(response);
+                            });
+                    } else {
+                        Response.error(
+                            response,
+                            new Error(
+                                ErrorMessage.NOT_FOUND,
+                                ErrorCode.NOT_FOUND
+                            )
+                        );
+                    }
+                })
+                .catch(error => {
+                    Response.error(response);
+                });
         });
 
         server.get('*', (request, response) => {
-            Response.error(
-                response,
-                new Error(
-                    Enum.error.message.NOT_FOUND,
-                    Enum.error.code.NOT_FOUND
-                )
-            );
+            if (Env.isProduction()) {
+                response.redirect(config.production.host);
+            } else {
+                Response.error(
+                    response,
+                    new Error(ErrorMessage.NOT_FOUND, ErrorCode.NOT_FOUND)
+                );
+            }
+        });
+
+        server.post('*', (request, response) => {
+            if (Env.isProduction()) {
+                response.redirect(config.production.host);
+            } else {
+                Response.error(
+                    response,
+                    new Error(ErrorMessage.NOT_FOUND, ErrorCode.NOT_FOUND)
+                );
+            }
         });
 
         server.start();

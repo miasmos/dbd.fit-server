@@ -1,10 +1,10 @@
 'use strict';
 import { Env } from './services/Env';
-import { Enum } from './Enum';
+import { ErrorMessage, ErrorCode } from './Enum';
 import { ErrorExtended as Error } from './response/Error';
 import { Response } from './response/Response';
 import { Log } from './services/Log';
-import { Validator } from './ValidatorMiddleware';
+import { Validator } from './validator/Validator';
 
 var express = require('express'),
     helmet = require('helmet'),
@@ -29,15 +29,11 @@ export class Server {
                 let host = request.headers.host.replace(/(.*):([0-9]+)/g, '$1');
                 if (
                     this.config.host !== host &&
-                    'www.' + this.config.host !== host &&
-                    'api.' + this.config.host !== host
+                    'www.' + this.config.host !== host
                 ) {
                     Response.error(
                         response,
-                        new Error(
-                            Enum.error.message.CORS,
-                            Enum.error.code.FORBIDDEN
-                        )
+                        new Error(ErrorMessage.CORS, ErrorCode.FORBIDDEN)
                     );
                     return;
                 }
@@ -45,19 +41,34 @@ export class Server {
                 response.header('Access-Control-Allow-Origin', host);
                 response.header(
                     'Access-Control-Allow-Methods',
-                    'GET,PUT,POST,DELETE'
+                    'GET,POST,OPTIONS'
                 );
                 response.header('Access-Control-Allow-Headers', 'Content-Type');
                 next();
             });
+        } else {
+            app.use((request, response, next) => {
+                response.header('Access-Control-Allow-Headers', 'Content-Type');
+                response.header('Access-Control-Allow-Origin', '*');
+                next();
+            });
         }
 
+        app.use(this.onError.bind(this));
+        app.use(this.optionsResponse.bind(this));
         app.use(express.json());
         app.use(helmet());
         app.use(compression());
         app.use(Validator);
-        app.use(this.onError.bind(this));
         this.app = app;
+    }
+
+    optionsResponse(request, response, next) {
+        if (request.method === 'OPTIONS') {
+            response.sendStatus(200);
+        } else {
+            next();
+        }
     }
 
     start() {
@@ -106,12 +117,7 @@ export class Server {
     }
 
     onError(error, request, response, next) {
-        Response.error(
-            response,
-            new Error(
-                Enum.error.message.BAD_REQUEST,
-                Enum.error.code.BAD_REQUEST
-            )
-        );
+        console.error('generic error: ', error);
+        Response.error(response);
     }
 }

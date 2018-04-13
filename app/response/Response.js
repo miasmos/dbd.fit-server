@@ -1,5 +1,5 @@
 'use strict';
-import { Enum } from '../Enum';
+import { ErrorCode, ErrorMessage } from '../Enum';
 
 export class Response {
     static ok(res, data) {
@@ -7,19 +7,23 @@ export class Response {
     }
 
     static error(res, error) {
-        return this.make(res, undefined, error);
+        return this.make(
+            res,
+            undefined,
+            error || new Error(ErrorMessage.GENERIC_ERROR, ErrorCode.ERROR)
+        );
     }
 
     static make(res, data, error) {
         if (typeof error !== 'undefined') {
-            res.status(error.code || Enum.error.code.ERROR).json({
-                status: error.code || Enum.error.code.ERROR,
-                error: error.message || Enum.error.message.GENERIC_ERROR,
+            res.status(error.code || ErrorCode.ERROR).json({
+                status: error.code || ErrorCode.ERROR,
+                error: error.message || ErrorMessage.GENERIC_ERROR,
                 data: {}
             });
         } else {
-            res.status(Enum.error.code.OK).json({
-                status: Enum.error.code.OK,
+            res.status(ErrorCode.OK).json({
+                status: ErrorCode.OK,
                 data: data
             });
         }
