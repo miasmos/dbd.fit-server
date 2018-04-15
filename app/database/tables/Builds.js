@@ -25,7 +25,7 @@ export class Builds extends Table {
         });
     }
 
-    create({ name, offering, perks, player, addons, type, power } = {}, hash) {
+    create({ name, perks, player, addons, type, power } = {}, hash) {
         if (!perks) {
             perks = [];
         }
@@ -48,7 +48,6 @@ export class Builds extends Table {
                                 perkFour: perks[3],
                                 addonOne: addons[0],
                                 addonTwo: addons[1],
-                                offering,
                                 hash
                             })
                             .then(resolve)

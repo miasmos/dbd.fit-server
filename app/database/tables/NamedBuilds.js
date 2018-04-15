@@ -40,6 +40,7 @@ export class NamedBuilds extends Table {
             name,
             buildURI,
             buildHash,
+            offering,
             perkOne: perks[0],
             perkTwo: perks[1],
             perkThree: perks[2],

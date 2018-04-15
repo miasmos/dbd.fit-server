@@ -67,6 +67,11 @@ export class Models {
                     type: DataTypes.STRING,
                     field: 'perk_four',
                     allowNull: true
+                },
+                offering: {
+                    type: DataTypes.STRING,
+                    field: 'offering',
+                    allowNull: true
                 }
             },
             {
@@ -135,11 +140,6 @@ export class Models {
                     field: 'perk_four',
                     allowNull: true
                 },
-                offering: {
-                    type: DataTypes.STRING,
-                    field: 'offering',
-                    allowNull: true
-                },
                 hash: {
                     type: DataTypes.STRING,
                     field: 'hash',
@@ -157,5 +157,78 @@ export class Models {
             }
         );
         this.builds.sync();
+
+        this.stats = connection.define(
+            'Stats',
+            {
+                id: {
+                    type: DataTypes.UUID,
+                    defaultValue: DataTypes.UUIDV4,
+                    field: 'id',
+                    primaryKey: true
+                },
+                index: {
+                    type: DataTypes.STRING,
+                    field: 'index',
+                    allowNull: false
+                },
+                created: {
+                    type: DataTypes.INTEGER,
+                    field: 'created',
+                    defaultValue: 1
+                },
+                type: {
+                    type: DataTypes.INTEGER,
+                    field: 'type',
+                    allowNull: false
+                },
+                viewed: {
+                    type: DataTypes.INTEGER,
+                    field: 'viewed',
+                    defaultValue: 1
+                }
+            },
+            {
+                freezeTableName: true
+            }
+        );
+        this.stats.sync();
+
+        this.buildStats = connection.define(
+            'BuildStats',
+            {
+                id: {
+                    type: DataTypes.UUID,
+                    defaultValue: DataTypes.UUIDV4,
+                    field: 'id',
+                    primaryKey: true
+                },
+                hash: {
+                    type: DataTypes.STRING,
+                    field: 'hash',
+                    allowNull: false
+                },
+                created: {
+                    type: DataTypes.INTEGER,
+                    field: 'created',
+                    defaultValue: 1
+                },
+                viewed: {
+                    type: DataTypes.INTEGER,
+                    field: 'viewed',
+                    defaultValue: 1
+                }
+            },
+            {
+                indexes: [
+                    {
+                        unique: true,
+                        fields: ['hash']
+                    }
+                ],
+                freezeTableName: true
+            }
+        );
+        this.buildStats.sync();
     }
 }

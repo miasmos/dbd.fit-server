@@ -2,6 +2,8 @@ import { Sequelize } from 'sequelize';
 import { Models } from './Models';
 import { Builds } from './tables/Builds';
 import { NamedBuilds } from './tables/NamedBuilds';
+import { BuildStats } from './tables/BuildStats';
+import { Stats } from './tables/Stats';
 
 let instance = undefined;
 
@@ -21,6 +23,8 @@ export class Database {
         this.models = new Models(this.connection);
         this.builds = new Builds(this.models.builds);
         this.namedBuilds = new NamedBuilds(this.models.namedBuilds);
+        this.stats = new Stats(this.models.stats);
+        this.buildStats = new BuildStats(this.models.buildStats);
 
         return instance;
     }

@@ -32,11 +32,23 @@ class App {
             ])
                 .then(result => {
                     Response.ok(response, { uri });
+                    logStats.call(this);
                 })
                 .catch(error => {
                     console.log(error);
                     Response.error(response);
                 });
+
+            function logStats() {
+                Promise.all([
+                    this.db.stats.createFromBuild(
+                        Normalize.stats(request.body)
+                    ),
+                    this.db.buildStats.created({ hash })
+                ]).catch(error => {
+                    console.log(error);
+                });
+            }
         });
 
         server.post('/build/get', (request, response) => {
@@ -48,11 +60,16 @@ class App {
                             .get({ hash: result.buildHash })
                             .then(result1 => {
                                 if (!!result1) {
-                                    Response.ok(
-                                        response,
-                                        Denormalize.build(
-                                            Object.assign(result1, result)
-                                        )
+                                    const build = Denormalize.build(
+                                        Object.assign(result1, result)
+                                    );
+
+                                    Response.ok(response, build);
+
+                                    incrementViewStats.call(
+                                        this,
+                                        build,
+                                        result.buildHash
                                     );
                                 } else {
                                     Response.error(
@@ -80,6 +97,15 @@ class App {
                 .catch(error => {
                     Response.error(response);
                 });
+
+            function incrementViewStats(build, hash) {
+                Promise.all([
+                    this.db.buildStats.viewed({ hash }),
+                    this.db.stats.viewFromBuild(Normalize.stats(build))
+                ]).catch(error => {
+                    console.log(error);
+                });
+            }
         });
 
         server.get('*', (request, response) => {

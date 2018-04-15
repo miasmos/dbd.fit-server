@@ -2,17 +2,19 @@ import { Crypto } from '../services/Crypto';
 import {
     AllPerkFactory,
     AllAddonFactory,
-    AllOfferingFactory
+    AllOfferingFactory,
+    AllPlayerFactory,
+    PowerFactory
 } from '../../../dbd.gg/app/js/factories';
+import { TypeNames, ModifierTypes } from '../../../dbd.gg/app/js/data';
 
 export class Normalize {
-    static build({ offering, perks, player, addons, power }) {
+    static build({ perks, player, addons, power }) {
         const str =
             player +
             power +
             (!!perks && perks.length ? this.stringifyPerks(perks) : '') +
-            (!!addons && addons.length ? this.stringifyAddons(addons) : '') +
-            (!!offering ? offering : '');
+            (!!addons && addons.length ? this.stringifyAddons(addons) : '');
 
         return Crypto.hash(str);
     }
@@ -28,6 +30,35 @@ export class Normalize {
             (!!offering ? offering : '');
 
         return Crypto.shorthash(Crypto.timestamp() + str);
+    }
+
+    static stats({ perks, player, addons, type, power, offering }) {
+        if (!perks) {
+            perks = [];
+        }
+        if (!addons) {
+            addons = [];
+        }
+
+        return {
+            perks: [
+                AllPerkFactory.get(perks[0]),
+                AllPerkFactory.get(perks[1]),
+                AllPerkFactory.get(perks[2]),
+                AllPerkFactory.get(perks[3])
+            ],
+            player: AllPlayerFactory.get(player),
+            addons: [
+                AllAddonFactory.get(addons[0]),
+                AllAddonFactory.get(addons[1])
+            ],
+            type: {
+                index: TypeNames[type],
+                modifierType: ModifierTypes.PLAYER_TYPE
+            },
+            power: PowerFactory.get(power),
+            offering: AllOfferingFactory.get(offering)
+        };
     }
 
     static stringifyPerks(perks) {
