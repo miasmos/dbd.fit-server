@@ -48,26 +48,6 @@ export class Models {
                     field: 'perk_four_tier',
                     allowNull: true
                 },
-                perkOne: {
-                    type: DataTypes.STRING,
-                    field: 'perk_one',
-                    allowNull: true
-                },
-                perkTwo: {
-                    type: DataTypes.STRING,
-                    field: 'perk_two',
-                    allowNull: true
-                },
-                perkThree: {
-                    type: DataTypes.STRING,
-                    field: 'perk_three',
-                    allowNull: true
-                },
-                perkFour: {
-                    type: DataTypes.STRING,
-                    field: 'perk_four',
-                    allowNull: true
-                },
                 offering: {
                     type: DataTypes.STRING,
                     field: 'offering',

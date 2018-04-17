@@ -22,7 +22,8 @@ export const ErrorCode = {
     ERROR: 500,
     TOO_MANY_REQUESTS: 429,
     NO_RESULTS: 601,
-    SERVICE_UNAVAILABLE: 503
+    SERVICE_UNAVAILABLE: 503,
+    RECAPTCHA_FAILED: 700
 };
 
 export const ErrorType = {

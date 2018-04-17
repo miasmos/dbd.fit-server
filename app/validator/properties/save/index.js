@@ -6,3 +6,4 @@ export { PerkTiers } from './PerkTiers';
 export { Addons } from './Addons';
 export { Type } from './Type';
 export { Power } from './Power';
+export { Recaptcha } from './Recaptcha';

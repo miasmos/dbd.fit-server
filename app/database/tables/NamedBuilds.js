@@ -22,13 +22,10 @@ export class NamedBuilds extends Table {
     }
 
     create(
-        { name, offering, perks, player, tiers, addons, type, power } = {},
+        { name, offering, player, tiers, addons, type, power } = {},
         buildHash,
         buildURI
     ) {
-        if (!perks) {
-            perks = [];
-        }
         if (!tiers) {
             tiers = [];
         }
@@ -41,10 +38,6 @@ export class NamedBuilds extends Table {
             buildURI,
             buildHash,
             offering,
-            perkOne: perks[0],
-            perkTwo: perks[1],
-            perkThree: perks[2],
-            perkFour: perks[3],
             perkOneTier: tiers[0],
             perkTwoTier: tiers[1],
             perkThreeTier: tiers[2],

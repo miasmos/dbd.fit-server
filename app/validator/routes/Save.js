@@ -11,7 +11,8 @@ import {
     PerkTiers,
     Addons,
     Type,
-    Power
+    Power,
+    Recaptcha
 } from '../properties/save';
 
 export class Save extends Route {
@@ -27,7 +28,8 @@ export class Save extends Route {
         tiers,
         addons,
         type,
-        power
+        power,
+        recaptcha
     } = {}) {
         const params = {
             name,
@@ -37,7 +39,8 @@ export class Save extends Route {
             tiers,
             addons,
             type,
-            power
+            power,
+            recaptcha
         };
 
         return new Promise((resolve, reject) => {
@@ -49,7 +52,8 @@ export class Save extends Route {
                 Player.type(player),
                 PerkTiers.type(tiers),
                 Addons.type(addons),
-                Power.type(power)
+                Power.type(power),
+                Recaptcha.type(recaptcha)
             ];
 
             const values = [

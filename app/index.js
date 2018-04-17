@@ -7,6 +7,7 @@ import { Normalize } from './database/Normalize';
 import { Denormalize } from './database/Denormalize';
 import { Response } from './response/Response';
 import { ErrorExtended as Error } from './response/Error';
+import { Recaptcha } from './services/Recaptcha';
 import { Server } from './server';
 
 let config = require('./config.json'),
@@ -27,6 +28,7 @@ class App {
             const uri = Normalize.buildURI(request.body);
 
             Promise.all([
+                Recaptcha.verify(request.body),
                 this.db.builds.create(request.body, hash),
                 this.db.namedBuilds.create(request.body, hash, uri)
             ])
