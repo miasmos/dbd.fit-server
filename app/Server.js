@@ -12,6 +12,7 @@ var express = require('express'),
     spdy = require('spdy'),
     http = require('http'),
     fs = require('fs'),
+    { URL } = require('url'),
     path = require('path'),
     config = require('./config.json');
 
@@ -26,11 +27,14 @@ export class Server {
 
         if (Env.isProduction()) {
             app.use((request, response, next) => {
-                let host = request.headers.host.replace(/(.*):([0-9]+)/g, '$1');
-                if (
-                    this.config.host !== host &&
-                    'www.' + this.config.host !== host
-                ) {
+                response.header(
+                    'Access-Control-Allow-Methods',
+                    'GET,POST,OPTIONS'
+                );
+                response.header('Access-Control-Allow-Headers', 'Content-Type');
+
+                let url = new URL(request.headers.origin);
+                if (this.config.whitelist.indexOf(url.hostname) === -1) {
                     Response.error(
                         response,
                         new Error(ErrorMessage.CORS, ErrorCode.FORBIDDEN)
@@ -38,12 +42,10 @@ export class Server {
                     return;
                 }
 
-                response.header('Access-Control-Allow-Origin', host);
                 response.header(
-                    'Access-Control-Allow-Methods',
-                    'GET,POST,OPTIONS'
+                    'Access-Control-Allow-Origin',
+                    url.protocol + '//' + url.hostname
                 );
-                response.header('Access-Control-Allow-Headers', 'Content-Type');
                 next();
             });
         } else {
@@ -58,6 +60,15 @@ export class Server {
         app.use(this.optionsResponse.bind(this));
         app.use(express.json());
         app.use(helmet());
+        app.use(helmet.noCache());
+        app.use(
+            helmet.contentSecurityPolicy({
+                directives: {
+                    defaultSrc: ["'self'", 'cloudflare.com', this.config.host],
+                    upgradeInsecureRequests: true
+                }
+            })
+        );
         app.use(compression());
         app.use(Validator);
         this.app = app;
@@ -83,16 +94,6 @@ export class Server {
             server.listen(this.config.https, () => {
                 Log.log(`Server listening on port ${this.config.https}`);
             });
-
-            let httpServer = http
-                .createServer((request, response) => {
-                    response.writeHead(301, {
-                        Location:
-                            'https://' + request.headers['host'] + request.url
-                    });
-                    response.end();
-                })
-                .listen(this.config.http);
         } else {
             server = http
                 .createServer(this.app)

@@ -5,6 +5,7 @@
             "cert": "../app/cert/fullchain.pem"
         },
         "host": "localhost",
+        "whitelist": ["localhost"],
         "protocol": "https",
         "https": 3000,
         "http": 3001
@@ -15,6 +16,12 @@
             "cert": "/etc/letsencrypt/live/dbd.gg/fullchain.pem"
         },
         "host": "dbd.gg",
+        "whitelist": [
+            "dbd.gg",
+            "api.dbd.gg",
+            "cloudflare.com",
+            "138.197.158.204"
+        ],
         "protocol": "https",
         "https": 3000,
         "http": 3001
