@@ -110,6 +110,105 @@ class App {
             }
         });
 
+        server.post('/chat/block', (request, response) => {
+            this.db.twitchChat
+                .upsert({
+                    channel: request.body.channel,
+                    blocked: true,
+                    join: false
+                })
+                .then(() => {
+                    Response.ok(response);
+                })
+                .catch(error => {
+                    console.error(error);
+                    Response.error(response);
+                });
+        });
+
+        server.post('/chat/allow', (request, response) => {
+            this.db.twitchChat
+                .upsert({
+                    channel: request.body.channel,
+                    blocked: false,
+                    join: false
+                })
+                .then(() => {
+                    Response.ok(response);
+                })
+                .catch(error => {
+                    Response.error(response);
+                });
+        });
+
+        server.post('/chat/join', (request, response) => {
+            this.db.twitchChat
+                .upsert({
+                    channel: request.body.channel,
+                    join: true
+                })
+                .then(() => {
+                    Response.ok(response);
+                })
+                .catch(error => {
+                    console.error(error);
+                    Response.error(response);
+                });
+        });
+
+        server.post('/chat/leave', (request, response) => {
+            this.db.twitchChat
+                .upsert({
+                    channel: request.body.channel,
+                    join: false
+                })
+                .then(() => {
+                    Response.ok(response);
+                })
+                .catch(error => {
+                    Response.error(response);
+                });
+        });
+
+        server.post('/chat/view', (request, response) => {
+            this.db.twitchChat
+                .upsert({
+                    channel: request.body.channel,
+                    view: true
+                })
+                .then(() => {
+                    Response.ok(response);
+                })
+                .catch(error => {
+                    Response.error(response);
+                });
+        });
+
+        server.post('/chat/channel', (request, response) => {
+            this.db.twitchChat
+                .get({
+                    channel: request.body.channel
+                })
+                .then(data => {
+                    Response.ok(response, data);
+                })
+                .catch(error => {
+                    Response.error(response);
+                });
+        });
+
+        server.post('/chat/channels', (request, response) => {
+            this.db.twitchChat
+                .getAll()
+                .then(data => {
+                    Response.ok(response, data);
+                })
+                .catch(error => {
+                    console.error(error);
+                    Response.error(response);
+                });
+        });
+
         server.get('*', (request, response) => {
             if (Env.isProduction()) {
                 response.redirect(config.production.host);

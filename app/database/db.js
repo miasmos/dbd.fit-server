@@ -4,6 +4,7 @@ import { Builds } from './tables/Builds';
 import { NamedBuilds } from './tables/NamedBuilds';
 import { BuildStats } from './tables/BuildStats';
 import { Stats } from './tables/Stats';
+import { TwitchChat } from './tables/TwitchChat';
 
 let instance = undefined;
 
@@ -25,6 +26,7 @@ export class Database {
         this.namedBuilds = new NamedBuilds(this.models.namedBuilds);
         this.stats = new Stats(this.models.stats);
         this.buildStats = new BuildStats(this.models.buildStats);
+        this.twitchChat = new TwitchChat(this.models.twitchChat);
 
         return instance;
     }

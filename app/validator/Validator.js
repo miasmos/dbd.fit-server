@@ -4,7 +4,7 @@ import { Response } from '../response/Response';
 import { ErrorType, ErrorMessage, ErrorCode } from '../Enum';
 import { FillString } from '../Util';
 import { RouteManager } from './RouteManager';
-import { Save, Get } from './routes';
+import { Save, Get, Chat } from './routes';
 
 let validator;
 
@@ -13,12 +13,17 @@ class ValidatorMiddleware {
         const routes = new RouteManager();
         routes.add('/build/save', Save);
         routes.add('/build/get', Get);
+        routes.add('/chat/block', Chat);
+        routes.add('/chat/allow', Chat);
+        routes.add('/chat/join', Chat);
+        routes.add('/chat/leave', Chat);
+        routes.add('/chat/view', Chat);
+        routes.add('/chat/channel', Chat);
         this.routes = routes;
     }
 
     middleware(request, response, next) {
         const route = request.path;
-        console.log(request.body);
 
         if (validator.routes.exists(route)) {
             validator.routes

@@ -40,4 +40,13 @@ export class Denormalize {
             offering: !!offering ? offering : undefined
         };
     }
+
+    static channel({ channel, join, blocked, views }) {
+        return {
+            channel,
+            join,
+            blocked,
+            views
+        };
+    }
 }

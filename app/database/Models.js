@@ -210,5 +210,47 @@ export class Models {
             }
         );
         this.buildStats.sync();
+
+        this.twitchChat = connection.define(
+            'TwitchChat',
+            {
+                id: {
+                    type: DataTypes.UUID,
+                    defaultValue: DataTypes.UUIDV4,
+                    field: 'id',
+                    primaryKey: true
+                },
+                channel: {
+                    type: DataTypes.STRING,
+                    field: 'channel',
+                    allowNull: false
+                },
+                join: {
+                    type: DataTypes.BOOLEAN,
+                    field: 'join',
+                    defaultValue: true
+                },
+                blocked: {
+                    type: DataTypes.BOOLEAN,
+                    field: 'blocked',
+                    defaultValue: false
+                },
+                views: {
+                    type: DataTypes.INTEGER,
+                    field: 'views',
+                    defaultValue: 0
+                }
+            },
+            {
+                indexes: [
+                    {
+                        unique: true,
+                        fields: ['channel']
+                    }
+                ],
+                freezeTableName: true
+            }
+        );
+        this.twitchChat.sync();
     }
 }
